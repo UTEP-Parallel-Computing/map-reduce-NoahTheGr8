@@ -42,6 +42,8 @@ def main():
                       'E', 'F', 'G', 'H']
     lists = dictOfItems(itemsToIterate)
 
+    print(lists)
+
     for list in lists:
         print(f'{list} : {lists[list]}')
     
