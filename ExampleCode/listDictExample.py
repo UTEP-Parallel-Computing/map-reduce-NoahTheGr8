@@ -12,7 +12,7 @@ def newListAndDict():
     # create a shared dict
     dictRet = pymp.shared.dict()
     
-    with pymp.Parallel() as p:
+    with pymp.Parallel(1) as p:
         # add thread number to list
         listRet.append(p.thread_num)
 

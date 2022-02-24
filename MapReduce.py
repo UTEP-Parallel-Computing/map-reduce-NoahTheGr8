@@ -15,80 +15,34 @@ Algorithm Map Reduce:
 
 import re
 import pymp
+import time
 
 '''
-count instances of a group of words and map them into a dictionary
-
-
-'''
-
-def map_(kw_dict, words):
-
-    for word in words: 
-        if word in kw_dict:
-            kw_dict[word] += 1        
-
-    return kw_dict
-    
+counts how many times kw is in all_words
 
 '''
-combine the similar words
-'''
-def shuffle_():
-    return -1
-
-
-'''
-combine the counts
-'''
-def reduce_():
-    
-    return -1
+def count(kw, all_words):
+    count = all_words.count(kw)
+    print("Found ", count, "for ", kw)
+    return count   
 
 
 if __name__ == "__main__":
     print("-------------- MAP REDUCE --------------\n")
     
+    
+    files = ['shakespeare1.txt','shakespeare2.txt','shakespeare3.txt','shakespeare4.txt','shakespeare5.txt',
+        'shakespeare6.txt','shakespeare7.txt','shakespeare8.txt']
     readings = []    
     
-    f = open('shakespeare1.txt', 'r', encoding='utf8')
-    s1 = f.read()
-    readings.append(s1)
+    for file_ in files:
+        f = open(file_, 'r', encoding='utf8')
+        s1 = f.read()
+        readings.append(s1)
     
-    f = open('shakespeare2.txt', 'r', encoding='utf8')
-    s2 = f.read()
-    readings.append(s2)
-    
-    f = open('shakespeare3.txt', 'r', encoding='utf8')
-    s3 = f.read()
-    readings.append(s3)
-    
-    f = open('shakespeare4.txt', 'r', encoding='utf8')
-    s4 = f.read()
-    readings.append(s4)
-    
-    f = open('shakespeare5.txt', 'r', encoding='utf8')
-    s5 = f.read()
-    readings.append(s5)
-    
-    f = open('shakespeare6.txt', 'r', encoding='utf8')
-    s6 = f.read()
-    readings.append(s6)
-    
-    f = open('shakespeare7.txt', 'r', encoding='utf8')
-    s7 = f.read()
-    readings.append(s7)
-    
-    f = open('shakespeare8.txt', 'r', encoding='utf8')
-    s8 = f.read()
-    readings.append(s8)
-    
-    
-    '''
-    Will only do 2 for sake of time
-    '''   
     #--------------------------------------------- FILTER --------------------------------------- ------
     
+    print("Filtering the Data...")
     #get all words from all documents
     words = []
     for doc in readings[:1]:
@@ -101,35 +55,41 @@ if __name__ == "__main__":
         for word in words[i]:
             if len(word) != 0:
                 words_new.append(word)
-  
+    print("Total amount of words ",len(words_new))
+    print("Finished Filtering the Data...")
     #--------------------------------------------- MAP ---------------------------------------   
     #print(len(words_new)) #198,323 words
     # start a parallel section
+    print("Mapping the data...")
+    start = time.time()
+     
+        
     with pymp.Parallel(4) as p:
         
-        #the shared list of all keywords we need to find
-        keywords = pymp.shared.list(["hate", "love", "death", "night", "sleep", "time", "henry", "hamlet", "you", "my", "blood", "poison", "macbeth", "king", "heart", "honest"])        
-        
+
         # create a shared dict since bug in OpenMP with outside initialization
+        #the shared list of all keywords we need to find
+        keywords = pymp.shared.list(["hate", "love", "death", "night", "sleep", "time", "henry", "hamlet", "you",
+                                     "my", "blood", "poison", "macbeth", "king", "heart", "honest"])        
         kw_dict = dict.fromkeys(keywords, 0)         
         kw_dictShared = pymp.shared.dict(kw_dict)
         
-        #print(len(words_new) * p.thread_num)
-        
+        #print("In thread:", p.thread_num)      
         countLock = p.lock
-        for i in p.iterate(words_new):
-        #splits up words evenly amongst threads using the iterate keyword 
-            
+        #print("TN>>>>>>>>>>>>>>>>>>>>>",p.thread_num)
+        for key_word in p.iterate(keywords):
+            print("Thread ", p.thread_num , " : ", key_word)    
             countLock.acquire()
-            #-----------TODO call the map function
-            kw_dictShared = map_(kw_dictShared, words_new)
+            #Below is mapping words and their frequency
+            kw_dictShared[key_word] += count(key_word, words_new)
             countLock.release()
       
-        print( "Thread", p.thread_num, "\n", kw_dictShared)
+        #print( "Thread", p.thread_num, "\n", kw_dictShared)
+    print(kw_dictShared)
+    elapsed_time = time.time() - start
+    print("Elapsed time in seconds for multithreading: ",elapsed_time)
+    #------------------------Shuffle and Reduce Method ------------------------------
     
-    #------------------------Step 3 ------------------------------
-  
     
     
-
     
