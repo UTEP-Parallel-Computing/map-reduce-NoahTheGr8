@@ -6,13 +6,13 @@ This programs main purpose is to perform the map reduce algorithm done in parall
 The main issue that I was having with this program was performing the regex operations. I don't think I was performing the regex part right BUT I was doing that parallel part correctly. Since this lab was not about regex, I believe I did perform and complete the intended purpose of this program. I did not correct this problem but I don't think it was worth fixing since the point of this lab was not to perform regex functionality correctly.
     
 ## Total Time Taken
-Total time it took was ~10 hours because regex issue. Although I didn't fix it, I did try which took about a 3rd of that time.
+Total time it took was ~10 hours because of the regex issue. Although I didn't fix it, I did try which took about a 3rd of that time.
 
 ## Performance Measurements
 The performance of the program was measured by taking the performance time 'time.time()'. The results are shown below in seconds. 
 
 
- * 1 thread: 0.8080966472625732
+ * 1 thread: 0.6773965358734131
 
 
  * 2 threads: 0.9912528991699219
@@ -28,20 +28,14 @@ The performance of the program was measured by taking the performance time 'time
 It seems that the performance peaked at about 1 threads and then declined. An output run for 1 thread looks like the below -
 
 ```
+student@linux-4oae:~/Desktop/Parallel Programming/map-reduce-NoahTheGr8> mpirun -n 1 python3 MapReduceMPI.py 
 Total amount of words  961257
 Finished Filtering the Data...
 Thread 0 distributing
 Mapping the data...
-Thread  0   0 120157
-Thread  1   120157 240314
-Thread  2   240314 360471
-Thread  3   360471 480628
-Thread  4   480628 600785
-Thread  5   600785 720942
-Thread  6   720942 841099
-Thread  7   841099 961257
+Thread  0   0 961257
 {'hate': 121, 'love': 1335, 'death': 364, 'night': 286, 'sleep': 113, 'time': 711, 'henry': 0, 'hamlet': 0, 'you': 9592, 'my': 11425, 'blood': 368, 'poison': 50, 'macbeth': 0, 'king': 175, 'heart': 565, 'honest': 217}
-Elapsed time in seconds for calculating all the word frequencies:  5.109552383422852
+Elapsed time in seconds for calculating all the word frequencies:  0.6773965358734131
 ```
 
 ## Observations/Comments
